@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin Wheel App</title>
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Stylesheet -->
+  </head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #c3a3f1, #6414e9);
+    }
+    .wrapper {
+      width: 90%;
+      max-width: 34.37em;
+      max-height: 90vh;
+      background-color: #ffffff;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      padding: 3em;
+      border-radius: 1em;
+      box-shadow: 0 4em 5em rgba(27, 8, 53, 0.2);
+    }
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    #wheel {
+      max-height: inherit;
+      width: inherit;
+      top: 0;
+      padding: 0;
+    }
+    @keyframes rotate {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    #spin-btn {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      height: 26%;
+      width: 26%;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 0;
+      background: radial-gradient(#fdcf3b 50%, #d88a40 85%);
+      color: #c66e16;
+      text-transform: uppercase;
+      font-size: 1.8em;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+    img {
+      position: absolute;
+      width: 4em;
+      top: 45%;
+      right: -8%;
+    }
+    #final-value {
+      font-size: 1.5em;
+      text-align: center;
+      margin-top: 1.5em;
+      color: #202020;
+      font-weight: 500;
+    }
+    @media screen and (max-width: 768px) {
+      .wrapper {
+        font-size: 12px;
+      }
+      img {
+        right: -5%;
+      }
+    }
+    .emoji {
+      position: absolute;
+      font-size: 2em;
+      top: -50px;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      from {
+        transform: translateY(-50px);
+      }
+      to {
+        transform: translateY(100vh);
+      }
+    }
+    .falling-emoji {
+      position: absolute;
+      font-size: 2em;
+      top: -50px;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      from {
+        transform: translateY(-50px);
+      }
+      to {
+        transform: translateY(100vh);
+      }
+    }
+    .popup {
+      height: 250px;
+      width: 250px;
+      background-color: white;
+      border: 5px solid #6e24ea;
+      border-radius: 20px;
+      position: absolute;
+      top: 31%;
+      left: 41.5%;
+      text-align: center;
+      box-shadow: 0 4em 5em rgba(27, 8, 53, 0.2);
+      opacity: 0;
+      transform: scale(0.8);
+      display: none;
+      transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    }
+
+    .popup.show {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .popup button {
+      padding: 10px 20px;
+      background-color: #6e24ea;
+      border: 3px solid white;
+      border-radius: 15px;
+      color: white;
+      position: absolute;
+      top: 80%;
+      right: 35%;
+      cursor: pointer;
+    }
+    .popup button:hover {
+      background-color: #8438ee;
+    }
+    .popup h1 {
+      padding: 20px;
+      color: #6e24ea;
+      font-size: 25px;
+    }
+    .icon {
+      font-size: 50px;
+    }
+    .side-elements{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 40px 40px;
+    }
+    .side1{
+      height: 600px;
+      width: 400px;
+      background-color: white;
+      border: 2px solid #6e24ea;
+      border-radius: 30px;
+    }
+    .side2{
+      height: 600px;
+      width: 400px;
+      background-color: white;
+      border: 2px solid #6e24ea;
+      border-radius: 30px;
+      padding: 20px;
+      text-align: center;
+    }
+    table {
+            width: 95%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: lightgray;
+        }
+  </style>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <canvas id="wheel"></canvas>
+        <button id="spin-btn">Spin</button>
+        <img src="./images/arrow.png" alt="spinner-arrow" />
+      </div>
+      <div id="final-value">
+        <p>Click On The Spin Button To Start</p>
+      </div>
+    </div>
+    <div class="popup" id="pop">
+      <div class="close">
+        <button id="close" onclick="pop.classList.remove('show')">Close</button>
+      </div>
+      <h1>You got a:</h1>
+      <div class="icon" id="icon"></div>
+    </div>
+    <div class="side-elements">
+      <div class="side1"></div>
+      <div class="side2">
+        <h2>Win Stats:</h2>
+        <table id="prizesTable">
+          <thead>
+              <tr>
+                  <th>S.N</th>
+                  <th>Prize</th>
+                  <th>Count</th>
+              </tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+      </div>
+    </div>
+    <!-- Chart JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Chart JS Plugin for displaying text over chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.1.0/chartjs-plugin-datalabels.min.js"></script>
+    <!-- Script -->
+  </body>
+  <script>
+    function createFallingEmoji() {
+      const emojis = ["✏️", "🖋️", "📔", "📖", "🍫", "🚫", "🎉", "😍"];
+      const emoji = document.createElement("div");
+      emoji.classList.add("falling-emoji");
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + "vw"; // Random horizontal position
+      emoji.style.animationDuration = Math.random() * 3 + 2 + "s"; // Random speed for fall
+      document.body.appendChild(emoji);
+      setTimeout(() => emoji.remove(), 5000); // Remove emoji after it falls
+    }
+
+    // Generate falling emojis every 500ms
+    setInterval(createFallingEmoji, 500);
+    const wheel = document.getElementById("wheel");
+    const spinBtn = document.getElementById("spin-btn");
+    const finalValue = document.getElementById("final-value");
+    //Object that stores values of minimum and maximum angle for a value
+    const rotationValues = [
+      { minDegree: 0, maxDegree: 30, value: "Pen", pic: "🖋️" },
+      { minDegree: 31, maxDegree: 90, value: "Eraser", pic: "⬜" },
+      { minDegree: 91, maxDegree: 150, value: "Chocofun", pic: "🍫" },
+      { minDegree: 151, maxDegree: 210, value: "Sharpner", pic: "Sharpner" },
+      { minDegree: 211, maxDegree: 270, value: "Try Again", pic: "🚫" },
+      { minDegree: 271, maxDegree: 330, value: "Pencil", pic: "✏️" },
+      { minDegree: 331, maxDegree: 360, value: "Pen", pic: "🖋️" },
+    ];
+    const prizes = [
+            { sn: 1, prize: "Pen", count: 0 },
+            { sn: 2, prize: "Pencil", count: 0 },
+            { sn: 3, prize: "Eraser", count: 0 },
+            { sn: 4, prize: "Sharpner", count: 0 },
+            { sn: 5, prize: "Chocofun", count: 0 },
+            { sn: 6, prize: "Try Again", count: 0 }
+        ];
+
+    //Size of each piece
+    const data = [16, 16, 16, 16, 16, 16];
+    //background color for each piece
+    var pieColors = [
+      "#8b35bd",
+      "#b163da",
+      "#8b35bc",
+      "#b163da",
+      "#8b35bc",
+      "#b163da",
+    ];
+    //Create chart
+    let myChart = new Chart(wheel, {
+      //Plugin for displaying text on pie chart
+      plugins: [ChartDataLabels],
+      //Chart Type Pie
+      type: "pie",
+      data: {
+        //Labels(values which are to be displayed on chart)
+        labels: ["Eraser", "Pen", "Pencil", "Try Again", "Sharpner", "Chocofun"],
+        //Settings for dataset/pie
+        datasets: [
+          {
+            backgroundColor: pieColors,
+            data: data,
+          },
+        ],
+      },
+      options: {
+        //Responsive chart
+        responsive: true,
+        animation: { duration: 0 },
+        plugins: {
+          //hide tooltip and legend
+          tooltip: false,
+          legend: {
+            display: false,
+          },
+          //display labels inside pie chart
+          datalabels: {
+            color: "#ffffff",
+            formatter: (_, context) =>
+              context.chart.data.labels[context.dataIndex],
+            font: { size: 24 },
+          },
+        },
+      },
+    });
+   // Function to update table dynamically
+function updateTable() {
+    // Sort prizes in descending order based on count
+    prizes.sort((a, b) => b.count - a.count);
+
+    // Clear previous table data
+    const tableBody = document.querySelector("#prizesTable tbody");
+    tableBody.innerHTML = "";
+
+    // Add sorted data to the table
+    prizes.forEach(item => {
+        let row = document.createElement("tr");
+        row.innerHTML = `<td>${item.sn}</td><td>${item.prize}</td><td>${item.count}</td>`;
+        tableBody.appendChild(row);
+    });
+}
+
+// Display value based on the randomAngle
+const valueGenerator = (angleValue) => {
+    for (let i of rotationValues) {
+        if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
+            finalValue.innerHTML = `<p>You received a: ${i.value} 🎉</p>`;
+
+            // Find the prize in the array and increase its count
+            let prizeItem = prizes.find(p => p.prize === i.value);
+            if (prizeItem) {
+                prizeItem.count += 1;
+            }
+
+            // Update table with new values
+            updateTable();
+
+            let popup = document.getElementById("pop");
+            if (i.value === "Pen") {
+                const victorySound = new Audio("images/victory.mp3");
+                victorySound.play();
+            } else if (i.value == "Try Again") {
+                const looseSound = new Audio("images/loose.mp3");
+                looseSound.play();
+            } else {
+                const sound = new Audio("images/normal.mp3");
+                sound.play();
+            }
+            
+            popup.classList.add("show");
+            icon.innerHTML = `<p>${i.pic}</p>`;
+
+            spinBtn.disabled = false;
+            break;
+        }
+    }
+};
+
+    
+
+    const spinSound = new Audio("images/spin_sound.mp3"); // Make sure to put the correct path to your sound file
+
+    // Start spinning
+    spinBtn.addEventListener("click", () => {
+      spinBtn.disabled = true;
+
+      // Play spin sound
+      spinSound.currentTime = 0; // Reset audio to start
+      spinSound.play();
+    });
+    //Spinner count
+    let count = 0;
+    //100 rotations for animation and last rotation for result
+    let resultValue = 101;
+    //Start spinning
+    spinBtn.addEventListener("click", () => {
+      spinBtn.disabled = true;
+      //Empty final value
+      finalValue.innerHTML = `<p>Good Luck!</p>`;
+      //Generate random degrees to stop at
+      let randomDegree = Math.floor(Math.random() * (355 - 0 + 1) + 0);
+      //Interval for rotation animation
+      let rotationInterval = window.setInterval(() => {
+        //Set rotation for piechart
+        /*
+    Initially to make the piechart rotate faster we set resultValue to 101 so it rotates 101 degrees at a time and this reduces by 1 with every count. Eventually on last rotation we rotate by 1 degree at a time.
+    */
+        myChart.options.rotation = myChart.options.rotation + resultValue;
+        //Update chart with new value;
+        myChart.update();
+        //If rotation>360 reset it back to 0
+        if (myChart.options.rotation >= 360) {
+          count += 1;
+          resultValue -= 5;
+          myChart.options.rotation = 0;
+        } else if (count > 15 && myChart.options.rotation == randomDegree) {
+          valueGenerator(randomDegree);
+          clearInterval(rotationInterval);
+          count = 0;
+          resultValue = 101;
+        }
+      }, 10);
+    });
+    
+
+        
+  </script>
+</html>
