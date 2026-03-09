@@ -5,424 +5,791 @@
     <title>Spin Wheel App</title>
     <!-- Google Font -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Stylesheet -->
-  </head>
-  <style>
-    * {
-      padding: 0;
-      margin: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
-    body {
-      height: 100vh;
-      background: linear-gradient(135deg, #c3a3f1, #6414e9);
-    }
-    .wrapper {
-      width: 90%;
-      max-width: 34.37em;
-      max-height: 90vh;
-      background-color: #ffffff;
-      position: absolute;
-      transform: translate(-50%, -50%);
-      top: 50%;
-      left: 50%;
-      padding: 3em;
-      border-radius: 1em;
-      box-shadow: 0 4em 5em rgba(27, 8, 53, 0.2);
-    }
-    .container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    #wheel {
-      max-height: inherit;
-      width: inherit;
-      top: 0;
-      padding: 0;
-    }
-    @keyframes rotate {
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-    #spin-btn {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      top: 50%;
-      left: 50%;
-      height: 26%;
-      width: 26%;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 0;
-      background: radial-gradient(#fdcf3b 50%, #d88a40 85%);
-      color: #c66e16;
-      text-transform: uppercase;
-      font-size: 1.8em;
-      letter-spacing: 0.1em;
-      font-weight: 600;
-    }
-    img {
-      position: absolute;
-      width: 4em;
-      top: 45%;
-      right: -8%;
-    }
-    #final-value {
-      font-size: 1.5em;
-      text-align: center;
-      margin-top: 1.5em;
-      color: #202020;
-      font-weight: 500;
-    }
-    @media screen and (max-width: 768px) {
-      .wrapper {
-        font-size: 12px;
-      }
-      img {
-        right: -5%;
-      }
-    }
-    .emoji {
-      position: absolute;
-      font-size: 2em;
-      top: -50px;
-      animation: fall linear infinite;
-    }
-
-    @keyframes fall {
-      from {
-        transform: translateY(-50px);
-      }
-      to {
-        transform: translateY(100vh);
-      }
-    }
-    .falling-emoji {
-      position: absolute;
-      font-size: 2em;
-      top: -50px;
-      animation: fall linear infinite;
-    }
-
-    @keyframes fall {
-      from {
-        transform: translateY(-50px);
-      }
-      to {
-        transform: translateY(100vh);
-      }
-    }
-    .popup {
-      height: 250px;
-      width: 250px;
-      background-color: white;
-      border: 5px solid #6e24ea;
-      border-radius: 20px;
-      position: absolute;
-      top: 31%;
-      left: 41.5%;
-      text-align: center;
-      box-shadow: 0 4em 5em rgba(27, 8, 53, 0.2);
-      opacity: 0;
-      transform: scale(0.8);
-      display: none;
-      transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    }
-
-    .popup.show {
-      display: block;
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .popup button {
-      padding: 10px 20px;
-      background-color: #6e24ea;
-      border: 3px solid white;
-      border-radius: 15px;
-      color: white;
-      position: absolute;
-      top: 80%;
-      right: 35%;
-      cursor: pointer;
-    }
-    .popup button:hover {
-      background-color: #8438ee;
-    }
-    .popup h1 {
-      padding: 20px;
-      color: #6e24ea;
-      font-size: 25px;
-    }
-    .icon {
-      font-size: 50px;
-    }
-    .side-elements{
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      padding: 40px 40px;
-    }
-    .side1{
-      height: 600px;
-      width: 400px;
-      background-color: white;
-      border: 2px solid #6e24ea;
-      border-radius: 30px;
-    }
-    .side2{
-      height: 600px;
-      width: 400px;
-      background-color: white;
-      border: 2px solid #6e24ea;
-      border-radius: 30px;
-      padding: 20px;
-      text-align: center;
-    }
-    table {
-            width: 95%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        th, td {
-            
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: lightgray;
-        }
-  </style>
-  <body>
-    <div class="wrapper">
-      <div class="container">
-        <canvas id="wheel"></canvas>
-        <button id="spin-btn">Spin</button>
-        <img src="./images/arrow.png" alt="spinner-arrow" />
-      </div>
-      <div id="final-value">
-        <p>Click On The Spin Button To Start</p>
-      </div>
-    </div>
-    <div class="popup" id="pop">
-      <div class="close">
-        <button id="close" onclick="pop.classList.remove('show')">Close</button>
-      </div>
-      <h1>You got a:</h1>
-      <div class="icon" id="icon"></div>
-    </div>
-    <div class="side-elements">
-      <div class="side1"></div>
-      <div class="side2">
-        <h2>Win Stats:</h2>
-        <table id="prizesTable">
-          <thead>
-              <tr>
-                  <th>S.N</th>
-                  <th>Prize</th>
-                  <th>Count</th>
-              </tr>
-          </thead>
-          <tbody></tbody>
-      </table>
-      </div>
-    </div>
     <!-- Chart JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <!-- Chart JS Plugin for displaying text over chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.1.0/chartjs-plugin-datalabels.min.js"></script>
-    <!-- Script -->
-  </body>
-  <script>
-    function createFallingEmoji() {
-      const emojis = ["✏️", "🖋️", "📔", "📖", "🍫", "🚫", "🎉", "😍"];
-      const emoji = document.createElement("div");
-      emoji.classList.add("falling-emoji");
-      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji.style.left = Math.random() * 100 + "vw"; // Random horizontal position
-      emoji.style.animationDuration = Math.random() * 3 + 2 + "s"; // Random speed for fall
-      document.body.appendChild(emoji);
-      setTimeout(() => emoji.remove(), 5000); // Remove emoji after it falls
-    }
-
-    // Generate falling emojis every 500ms
-    setInterval(createFallingEmoji, 500);
-    const wheel = document.getElementById("wheel");
-    const spinBtn = document.getElementById("spin-btn");
-    const finalValue = document.getElementById("final-value");
-    //Object that stores values of minimum and maximum angle for a value
-    const rotationValues = [
-      { minDegree: 0, maxDegree: 30, value: "Pen", pic: "🖋️" },
-      { minDegree: 31, maxDegree: 90, value: "Eraser", pic: "⬜" },
-      { minDegree: 91, maxDegree: 150, value: "Chocofun", pic: "🍫" },
-      { minDegree: 151, maxDegree: 210, value: "Sharpner", pic: "Sharpner" },
-      { minDegree: 211, maxDegree: 270, value: "Try Again", pic: "🚫" },
-      { minDegree: 271, maxDegree: 330, value: "Pencil", pic: "✏️" },
-      { minDegree: 331, maxDegree: 360, value: "Pen", pic: "🖋️" },
-    ];
-    const prizes = [
-            { sn: 1, prize: "Pen", count: 0 },
-            { sn: 2, prize: "Pencil", count: 0 },
-            { sn: 3, prize: "Eraser", count: 0 },
-            { sn: 4, prize: "Sharpner", count: 0 },
-            { sn: 5, prize: "Chocofun", count: 0 },
-            { sn: 6, prize: "Try Again", count: 0 }
-        ];
-
-    //Size of each piece
-    const data = [16, 16, 16, 16, 16, 16];
-    //background color for each piece
-    var pieColors = [
-      "#8b35bd",
-      "#b163da",
-      "#8b35bc",
-      "#b163da",
-      "#8b35bc",
-      "#b163da",
-    ];
-    //Create chart
-    let myChart = new Chart(wheel, {
-      //Plugin for displaying text on pie chart
-      plugins: [ChartDataLabels],
-      //Chart Type Pie
-      type: "pie",
-      data: {
-        //Labels(values which are to be displayed on chart)
-        labels: ["Eraser", "Pen", "Pencil", "Try Again", "Sharpner", "Chocofun"],
-        //Settings for dataset/pie
-        datasets: [
-          {
-            backgroundColor: pieColors,
-            data: data,
-          },
-        ],
-      },
-      options: {
-        //Responsive chart
-        responsive: true,
-        animation: { duration: 0 },
-        plugins: {
-          //hide tooltip and legend
-          tooltip: false,
-          legend: {
-            display: false,
-          },
-          //display labels inside pie chart
-          datalabels: {
-            color: "#ffffff",
-            formatter: (_, context) =>
-              context.chart.data.labels[context.dataIndex],
-            font: { size: 24 },
-          },
-        },
-      },
-    });
-   // Function to update table dynamically
-function updateTable() {
-    // Sort prizes in descending order based on count
-    prizes.sort((a, b) => b.count - a.count);
-
-    // Clear previous table data
-    const tableBody = document.querySelector("#prizesTable tbody");
-    tableBody.innerHTML = "";
-
-    // Add sorted data to the table
-    prizes.forEach(item => {
-        let row = document.createElement("tr");
-        row.innerHTML = `<td>${item.sn}</td><td>${item.prize}</td><td>${item.count}</td>`;
-        tableBody.appendChild(row);
-    });
-}
-
-// Display value based on the randomAngle
-const valueGenerator = (angleValue) => {
-    for (let i of rotationValues) {
-        if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
-            finalValue.innerHTML = `<p>You received a: ${i.value} 🎉</p>`;
-
-            // Find the prize in the array and increase its count
-            let prizeItem = prizes.find(p => p.prize === i.value);
-            if (prizeItem) {
-                prizeItem.count += 1;
-            }
-
-            // Update table with new values
-            updateTable();
-
-            let popup = document.getElementById("pop");
-            if (i.value === "Pen") {
-                const victorySound = new Audio("images/victory.mp3");
-                victorySound.play();
-            } else if (i.value == "Try Again") {
-                const looseSound = new Audio("images/loose.mp3");
-                looseSound.play();
-            } else {
-                const sound = new Audio("images/normal.mp3");
-                sound.play();
-            }
-            
-            popup.classList.add("show");
-            icon.innerHTML = `<p>${i.pic}</p>`;
-
-            spinBtn.disabled = false;
-            break;
-        }
-    }
-};
-
+    <!-- Confetti JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea, #764ba2);
+        --secondary-gradient: linear-gradient(135deg, #f093fb, #f5576c);
+        --glass-bg: rgba(255, 255, 255, 0.08);
+        --glass-border: rgba(255, 255, 255, 0.18);
+        --text-color: #ffffff;
+        --card-bg: rgba(255, 255, 255, 0.05);
+        --accent-color: #ffd700;
+        --glow-color: rgba(255, 215, 0, 0.4);
+      }
 
-    const spinSound = new Audio("images/spin_sound.mp3"); // Make sure to put the correct path to your sound file
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-    // Start spinning
-    spinBtn.addEventListener("click", () => {
-      spinBtn.disabled = true;
+      body {
+        min-height: 100vh;
+        background: #0f0c29;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        color: var(--text-color);
+        padding: 2rem 1rem;
+        overflow-x: hidden;
+      }
 
-      // Play spin sound
-      spinSound.currentTime = 0; // Reset audio to start
-      spinSound.play();
-    });
-    //Spinner count
-    let count = 0;
-    //100 rotations for animation and last rotation for result
-    let resultValue = 101;
-    //Start spinning
-    spinBtn.addEventListener("click", () => {
-      spinBtn.disabled = true;
-      //Empty final value
-      finalValue.innerHTML = `<p>Good Luck!</p>`;
-      //Generate random degrees to stop at
-      let randomDegree = Math.floor(Math.random() * (355 - 0 + 1) + 0);
-      //Interval for rotation animation
-      let rotationInterval = window.setInterval(() => {
-        //Set rotation for piechart
-        /*
-    Initially to make the piechart rotate faster we set resultValue to 101 so it rotates 101 degrees at a time and this reduces by 1 with every count. Eventually on last rotation we rotate by 1 degree at a time.
-    */
-        myChart.options.rotation = myChart.options.rotation + resultValue;
-        //Update chart with new value;
-        myChart.update();
-        //If rotation>360 reset it back to 0
-        if (myChart.options.rotation >= 360) {
-          count += 1;
-          resultValue -= 5;
-          myChart.options.rotation = 0;
-        } else if (count > 15 && myChart.options.rotation == randomDegree) {
-          valueGenerator(randomDegree);
-          clearInterval(rotationInterval);
-          count = 0;
-          resultValue = 101;
+      /* Animated Background */
+      body::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(110, 36, 234, 0.1) 10%, transparent 20%),
+                    radial-gradient(circle, rgba(253, 207, 59, 0.05) 10%, transparent 20%);
+        background-size: 30px 30px;
+        opacity: 0.5;
+        z-index: -1;
+        animation: bgMove 60s linear infinite;
+        position: fixed; /* Fix bg scrolling */
+      }
+
+      @keyframes bgMove {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .app-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      @media screen and (max-width: 900px) {
+        .app-layout {
+          grid-template-columns: 1fr;
         }
-      }, 10);
-    });
-    
+      }
 
+      /* Base Card Style */
+      .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px 0 rgba(10, 10, 40, 0.37),
+                    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .glass-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px 0 rgba(10, 10, 40, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+      }
+
+      .glass-header {
+        color: var(--accent-color);
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 10px var(--glow-color);
+        letter-spacing: 1px;
+      }
+
+      /* 1. Branding Section */
+      .branding-section {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      
+      .logo-preview {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 2px solid var(--glass-border);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      
+      .logo-preview:hover {
+        transform: scale(1.05);
+        border-color: var(--accent-color);
+      }
+
+      .logo-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .branding-inputs {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      input, button {
+        background: rgba(0,0,0,0.2);
+        border: 1px solid var(--glass-border);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        color: white;
+        outline: none;
+      }
+      
+      input:focus {
+        border-color: var(--accent-color);
+        background: rgba(0,0,0,0.4);
+      }
+      
+      .school-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        margin-top: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      }
+
+      /* 2. Wheel Section */
+      .wheel-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        min-height: 400px;
+        padding: 2rem;
+      }
+
+      .wheel-container-outer {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        aspect-ratio: 1;
+      }
+      
+      .wheel-container-inner {
+        width: 100%;
+        height: 100%;
+        transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+        will-change: transform;
+      }
+      
+      .wheel-container-inner.spinning {
+        filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
+        animation: pulse-glow 0.5s ease-in-out infinite alternate;
+      }
+      
+      @keyframes pulse-glow {
+        from { filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6)); }
+        to { filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8)); }
+      }
+
+      #spin-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 4px solid #ffffff;
+        background: radial-gradient(circle at 30% 30%, #ffd700, #ff8c00);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.2rem;
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6),
+                    0 4px 15px rgba(0,0,0,0.5);
+        z-index: 20;
+        transition: all 0.3s ease;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      }
+
+      #spin-btn:hover {
+        transform: translate(-50%, -50%) scale(1.15);
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.8),
+                    0 6px 20px rgba(0,0,0,0.6);
+        border-color: var(--accent-color);
+      }
+      
+      #spin-btn:active {
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+      
+      #spin-btn:disabled {
+        filter: grayscale(1) brightness(0.7);
+        cursor: not-allowed;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      }
+
+      .spinner-arrow {
+        position: absolute;
+        top: 50%;
+        right: -30px; 
+        transform: translateY(-50%) rotate(180deg);
+        width: 50px;
+        z-index: 10;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+      }
+
+      /* 3. Settings Section */
+      .settings-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+      }
+      
+      .input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .update-btn {
+        background: var(--primary-gradient);
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .update-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+      }
+      
+      .update-btn:hover::before {
+        width: 300px;
+        height: 300px;
+      }
+      
+      .update-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      }
+      
+      .reset-btn {
+        background: var(--secondary-gradient);
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        transition: all 0.3s ease;
+        border: 1px solid var(--glass-border);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        color: white;
+      }
+      
+      .reset-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(245, 87, 108, 0.5);
+      }
+
+      /* 4. Stats Section */
+      .table-container {
+        max-height: 250px;
+        overflow-y: auto;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      
+      th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 0.9rem;
+      }
+
+      /* 5. Popup */
+      .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(12px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+        z-index: 100;
+      }
+      
+      .popup-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      
+      .popup-card {
+        background: linear-gradient(135deg, #1e1e30 0%, #2a2a40 100%);
+        padding: 3rem 2.5rem;
+        border-radius: 1.5rem;
+        text-align: center;
+        transform: scale(0.7) rotateX(20deg);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border: 2px solid var(--accent-color);
+        box-shadow: 0 0 50px rgba(255, 215, 0, 0.4),
+                    0 20px 60px rgba(0, 0, 0, 0.6);
+        max-width: 400px;
+      }
+      
+      .popup-overlay.show .popup-card {
+        transform: scale(1) rotateX(0deg);
+      }
+      
+      .popup-emoji {
+        font-size: 4rem;
+        animation: bounce 0.6s ease infinite alternate;
+      }
+      
+      @keyframes bounce {
+        from { transform: translateY(0); }
+        to { transform: translateY(-10px); }
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    <div class="app-layout">
+      <!-- LEFT COLUMN -->
+      <div style="display: flex; flex-direction: column; gap: 2rem;">
         
-  </script>
+        <!-- Branding Card -->
+        <div class="glass-card">
+          <div class="glass-header">School / Organization</div>
+          <div class="branding-section">
+            <div class="logo-preview" onclick="document.getElementById('logoInput').click()">
+              <!-- Default or User Image -->
+              <img id="schoolLogo" src="https://via.placeholder.com/80?text=Logo" alt="Logo" />
+              <input type="file" id="logoInput" accept="image/*" style="display: none" />
+            </div>
+            <div class="branding-inputs">
+              <input type="text" id="schoolNameInput" placeholder="Enter School Name" />
+              <div id="schoolNameDisplay" class="school-title">My School</div>
+              <small style="color: #aaa; font-size: 0.7rem;">Click circle to upload logo</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wheel Card -->
+        <div class="glass-card wheel-section">
+          <div class="wheel-container-outer">
+            <div class="wheel-container-inner" id="wheelCircle">
+              <canvas id="wheel"></canvas>
+            </div>
+            <button id="spin-btn">SPIN</button>
+            <img src="./images/arrow.png" class="spinner-arrow" />
+          </div>
+          <div id="result-msg" style="margin-top: 1rem; font-weight: 600; font-size: 1.2rem;">Good Luck!</div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div style="display: flex; flex-direction: column; gap: 2rem;">
+        
+        <!-- Settings Card -->
+        <div class="glass-card">
+          <div class="glass-header">Customize Wheel</div>
+          <div class="settings-grid" id="settingsGrid">
+            <!-- Inputs generated by JS -->
+          </div>
+          <button class="update-btn" onclick="updateWheelConfig()">Update Wheel</button>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="glass-card">
+          <div class="glass-header">Win Statistics</div>
+          <div class="table-container">
+            <table id="statsTable">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Prize</th>
+                  <th>Wins</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <button class="reset-btn" onclick="resetStats()">Reset Statistics</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- POPUP -->
+    <div class="popup-overlay" id="popup">
+      <div class="popup-card">
+        <div class="popup-emoji">🎉</div>
+        <h2 style="margin-bottom: 0.5rem; color: #fff; font-size: 2rem;">Congratulations!</h2>
+        <p style="color: #aaa; margin-bottom: 1rem;">You won:</p>
+        <h1 id="popup-result" style="color: var(--accent-color); font-size: 2.8rem; margin: 1rem 0; text-shadow: 0 0 20px var(--glow-color);">Prize</h1>
+        <button class="update-btn" onclick="closePopup()" style="margin-top: 1.5rem; width: 100%;">Awesome! 🎊</button>
+      </div>
+    </div>
+
+    <script>
+      // ================= DATA =================
+      // Default Prizes (6 segments)
+      let prizes = [
+        "Eraser",
+        "Pen",
+        "Pencil",
+        "Try Again",
+        "Sharpner",
+        "Chocofun"
+      ];
+      
+      const pieColors = [
+        "#FF6B6B", "#4ECDC4", "#FFE66D", "#1A535C", "#FF9F1C", "#5956E9"
+      ];
+      
+      // Weighted probabilities:
+      // Try Again = 47.5% (9.5 units) - appears 4.5-5 times per 10 spins (45-50%)
+      // Pen = 5% (1 unit) - appears 1 time per 20 spins
+      // Pencil = 5% (1 unit) - appears 1 time per 20 spins (same as Pen)
+      // Others = 15.83% each (3.167 units) - Eraser, Sharpner, Chocofun
+      // Total = 20 units (3.167+1+1+9.5+3.167+3.167)
+      let prizeWeights = [3.167, 1, 1, 9.5, 3.167, 3.167]; // [Eraser, Pen, Pencil, Try Again, Sharpner, Chocofun]
+
+      // Track wins
+      let winCounts = {};
+      prizes.forEach(p => winCounts[p] = 0);
+
+      // ================= ELEMENTS =================
+      const wheelCanvas = document.getElementById("wheel");
+      const wheelCircle = document.getElementById("wheelCircle");
+      const spinBtn = document.getElementById("spin-btn");
+      const resultMsg = document.getElementById("result-msg");
+      const settingsGrid = document.getElementById("settingsGrid");
+      const statsTableBody = document.querySelector("#statsTable tbody");
+      const popup = document.getElementById("popup");
+      const popupResult = document.getElementById("popup-result");
+      
+      const schoolNameInput = document.getElementById("schoolNameInput");
+      const schoolNameDisplay = document.getElementById("schoolNameDisplay");
+      const logoInput = document.getElementById("logoInput");
+      const schoolLogo = document.getElementById("schoolLogo");
+
+      // ================= INIT =================
+      
+      // 1. Chart Generation
+      let myChart = new Chart(wheelCanvas, {
+        plugins: [ChartDataLabels],
+        type: "pie",
+        data: {
+          labels: prizes,
+          datasets: [{
+            backgroundColor: pieColors,
+            data: Array(6).fill(1), // Equal visual slices (all same size)
+            borderColor: "rgba(255,255,255,0.1)",
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          animation: { duration: 0 },
+          plugins: {
+            tooltip: false,
+            legend: { display: false },
+            datalabels: {
+              color: "#ffffff",
+              formatter: (_, context) => context.chart.data.labels[context.dataIndex],
+              font: { size: 16, weight: 'bold' },
+              anchor: 'center',
+              align: 'center',
+              rotation: (ctx) => {
+                 const angle = ctx.chart.getDatasetMeta(0).data[ctx.dataIndex].startAngle + 
+                               (ctx.chart.getDatasetMeta(0).data[ctx.dataIndex].endAngle - ctx.chart.getDatasetMeta(0).data[ctx.dataIndex].startAngle)/2;
+                 return angle * (180/Math.PI) + 90; 
+              }
+            }
+          }
+        }
+      });
+
+      // 2. Render Input Fields
+      function renderInputs() {
+        settingsGrid.innerHTML = "";
+        prizes.forEach((p, i) => {
+          const div = document.createElement("div");
+          div.className = "input-group";
+          div.innerHTML = `
+            <span style="width: 20px; color: ${pieColors[i]}">●</span>
+            <input type="text" value="${p}" id="prize-input-${i}" style="width: 100%">
+          `;
+          settingsGrid.appendChild(div);
+        });
+      }
+      renderInputs();
+
+      // 3. Update Function
+      window.updateWheelConfig = () => {
+        // Read inputs
+        const newPrizes = [];
+        for(let i=0; i<6; i++) {
+          const val = document.getElementById(`prize-input-${i}`).value;
+          newPrizes.push(val || `Prize ${i+1}`);
+        }
+        
+        // Update Stats Tracking (reset counts for new items if name changes? simpler to just init 0 if not exist)
+        newPrizes.forEach(p => {
+          if (winCounts[p] === undefined) winCounts[p] = 0;
+        });
+
+        prizes = newPrizes;
+        
+        // Update Chart (keep equal visual slices)
+        myChart.data.labels = prizes;
+        myChart.update();
+        
+        updateStats();
+        // Reset rotation visually to avoid confusion? No, keep it.
+        alert("Wheel Updated!");
+      };
+
+      // 4. Spin Logic with Weighted Probability
+      let currentRotation = 0;
+
+      spinBtn.addEventListener("click", () => {
+        // Disable
+        spinBtn.disabled = true;
+        resultMsg.innerText = "Spinning...";
+        wheelCircle.classList.add('spinning');
+
+        // Play Sound
+        new Audio("images/spin_sound.mp3").play().catch(()=>{});
+
+        // Weighted random selection for target prize
+        const totalWeight = prizeWeights.reduce((a, b) => a + b, 0);
+        const randomNum = Math.random() * totalWeight;
+        
+        let cumulativeWeight = 0;
+        let targetIndex = 0;
+        
+        for (let i = 0; i < prizeWeights.length; i++) {
+          cumulativeWeight += prizeWeights[i];
+          if (randomNum < cumulativeWeight) {
+            targetIndex = i;
+            break;
+          }
+        }
+        
+        // Calculate rotation to land on target slice
+        // Each slice is 60 degrees (360/6)
+        // Slice 0 starts at 0°, Slice 1 at 60°, etc.
+        const degreesPerSlice = 360 / prizes.length;
+        const sliceStartAngle = targetIndex * degreesPerSlice;
+        
+        // Random position within the target slice (center area for better accuracy)
+        const targetAngle = sliceStartAngle + (degreesPerSlice * 0.5); // Center of slice
+        
+        // Arrow is at 90 degrees (right side)
+        // We need to calculate the final absolute rotation that puts targetAngle at the arrow
+        const pointerPosition = 90;
+        const minSpins = 5; // Minimum 5 full rotations
+        const extraSpins = Math.floor(Math.random() * 3); // 0-2 extra spins for variation
+        const totalSpins = minSpins + extraSpins;
+        
+        // Calculate the target final rotation (where we want to end up)
+        // We want the wheel to be rotated such that targetAngle aligns with pointer (90°)
+        // finalRotation % 360 should equal (360 + pointerPosition - targetAngle) % 360
+        const targetFinalAngle = (360 + pointerPosition - targetAngle) % 360;
+        
+        // Add full spins to make it look good
+        const finalRotation = (totalSpins * 360) + targetFinalAngle;
+        
+        // Calculate distance from current position
+        const distance = finalRotation - (currentRotation % 360);
+        
+        currentRotation += distance;
+        
+        // Apply CSS
+        wheelCircle.style.transform = `rotate(${currentRotation}deg)`;
+      });
+
+      // 5. Determine Winner Based on Arrow Position
+      wheelCircle.addEventListener("transitionend", () => {
+        spinBtn.disabled = false;
+        wheelCircle.classList.remove('spinning');
+        
+        // Calculate which slice the arrow is pointing at
+        // Arrow is at 90 degrees (right side)
+        // Each slice is 60 degrees (360/6)
+        
+        const effectiveRotation = currentRotation % 360;
+        
+        // The arrow points at 90 degrees
+        // After rotation, we need to find which slice is at the arrow position
+        // Wheel rotates clockwise, so we calculate: (arrow position - rotation) % 360
+        const pointerAngle = 90;
+        const angleAtPointer = (360 - effectiveRotation + pointerAngle) % 360;
+        
+        // Find which slice this angle falls into
+        // Slices: 0-60 (index 0), 60-120 (index 1), etc.
+        const degreesPerSlice = 360 / prizes.length;
+        let index = Math.floor(angleAtPointer / degreesPerSlice) % prizes.length;
+        
+        const winner = prizes[index];
+        
+        // Show Result with animation
+        resultMsg.style.transform = 'scale(1.2)';
+        resultMsg.style.color = 'var(--accent-color)';
+        resultMsg.innerText = `🎊 Result: ${winner} 🎊`;
+        
+        setTimeout(() => {
+          resultMsg.style.transform = 'scale(1)';
+          resultMsg.style.color = 'var(--text-color)';
+        }, 500);
+        
+        // Update Stats
+        if (winCounts[winner] !== undefined) {
+          winCounts[winner]++;
+        } else {
+          winCounts[winner] = 1;
+        }
+        updateStats();
+
+        // Popup
+        popupResult.innerText = winner;
+        popup.classList.add("show");
+        
+        // Effects
+        fireConfetti();
+        if (winner === "Try Again") {
+          new Audio("images/loose.mp3").play().catch(()=>{});
+        } else {
+          new Audio("images/victory.mp3").play().catch(()=>{});
+        }
+      });
+
+      function updateStats() {
+        // Convert to array and sort by count (descending)
+        let sorted = Object.keys(winCounts)
+          .map(k => ({ prize: k, count: winCounts[k] }))
+          .filter(item => prizes.includes(item.prize) && item.count > 0)
+          .sort((a,b) => b.count - a.count);
+        
+        statsTableBody.innerHTML = "";
+        
+        if (sorted.length === 0) {
+          statsTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #aaa;">No spins yet!</td></tr>';
+          return;
+        }
+        
+        sorted.forEach((item, idx) => {
+           const row = `<tr style="animation: fadeIn 0.3s ease ${idx * 0.1}s both;">
+             <td>${idx+1}</td>
+             <td>${item.prize}</td>
+             <td><strong>${item.count}</strong></td>
+           </tr>`;
+           statsTableBody.innerHTML += row;
+        });
+      }
+      
+      // Reset Statistics Function
+      window.resetStats = () => {
+        if (confirm('Are you sure you want to reset all statistics?')) {
+          prizes.forEach(p => winCounts[p] = 0);
+          updateStats();
+          resultMsg.innerText = "Good Luck!";
+        }
+      };
+
+      // Branding Handlers
+      schoolNameInput.addEventListener("input", (e) => {
+        schoolNameDisplay.innerText = e.target.value || "My School";
+      });
+      
+      logoInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if(file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => schoolLogo.src = ev.target.result;
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Confetti
+      function fireConfetti() {
+        var duration = 3 * 1000;
+        var end = Date.now() + duration;
+        (function frame() {
+          confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+          confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+      }
+
+      // Helpers
+      window.closePopup = () => popup.classList.remove("show");
+      
+      // Add fade-in animation for stats
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateX(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        #result-msg {
+          transition: all 0.3s ease;
+        }
+      `;
+      document.head.appendChild(style);
+
+    </script>
+  </body>
 </html>
